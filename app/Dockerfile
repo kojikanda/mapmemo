@@ -35,7 +35,7 @@ RUN pip install --upgrade pip && \
     pip install -r $APP_HOME/requirements.txt
 
 # chown all the files to app user
-RUN chown -R $OS_USER:$OS_GROUP $APP_HOME
+RUN chown -R $OS_USER:$OS_GROUP /usr/mapmemo
 RUN chown -R $OS_USER:$OS_GROUP /var/run/uwsgi
 
 # switch to app user
