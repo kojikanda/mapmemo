@@ -6,22 +6,32 @@ ARG OS_USER
 ARG OS_GROUP
 RUN addgroup -S $OS_GROUP && adduser -S $OS_USER -G $OS_GROUP
 
-# create application directory
-ENV APP_HOME=/usr/src/app
-RUN mkdir -p $APP_HOME && \
-    mkdir -p $APP_HOME/portfolio1 && \
-    mkdir -p /var/run/uwsgi
-
-# copy application project data
-WORKDIR $APP_HOME
-COPY ./portfolio1 ./portfolio1
-COPY ./requirements.txt .
-COPY ./wait_for_postgres.sh .
-
-# install dependencies
+# install Alpine Linux packages
 RUN apk update && \
-    apk add gcc python3-dev python3-tkinter musl-dev libpq postgresql13-dev postgresql13-client linux-headers && \
-    pip install --upgrade pip && \
+    apk add gcc git python3-dev python3-tkinter musl-dev libpq postgresql13-dev postgresql13-client linux-headers
+
+# git clone application data
+# GitHub Credentials are temporarily written to a file.
+ARG GITHUB_URL
+ARG GITHUB_USER
+ARG GITHUB_TOKEN
+RUN cd /usr && \
+    touch /root/.netrc && \
+    echo machine github.com >> /root/.netrc && \
+    echo login $GITHUB_USER >> /root/.netrc && \
+    echo password $GITHUB_TOKEN >> /root/.netrc && \
+    git clone --depth 1 $GITHUB_URL && \
+    rm /root/.netrc
+
+# create application directory
+RUN mkdir -p /var/run/uwsgi
+
+# application home
+ENV APP_HOME=/usr/mapmemo/app
+WORKDIR $APP_HOME
+
+# install pip packages
+RUN pip install --upgrade pip && \
     pip install -r $APP_HOME/requirements.txt
 
 # chown all the files to app user

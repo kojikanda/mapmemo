@@ -18,8 +18,11 @@ services:
       args:
         - OS_USER=$OS_USER
         - OS_GROUP=$OS_GROUP
-    command: uwsgi --ini /usr/src/app/portfolio1/uwsgi.ini
-    working_dir: /usr/src/app/
+        - GITHUB_URL=$GITHUB_URL
+        - GITHUB_USER=$GITHUB_USER
+        - GITHUB_TOKEN=$GITHUB_TOKEN
+    command: uwsgi --ini /usr/mapmemo/app/portfolio1/uwsgi.ini
+    working_dir: /usr/mapmemo/app/portfolio1
     expose:
       - 8000
     env_file:
