@@ -134,3 +134,6 @@ node_modules/
 
 # mac system files
 .DS_Store
+
+# django static directory
+app/portfolio1/static
