@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.devel
 .venv
 env/
 venv/
@@ -127,3 +128,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# npm installed modules
+node_modules/
+
+# mac system files
+.DS_Store

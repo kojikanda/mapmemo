@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'mapmemo/css/style.css' %}">
+  </head>
+  <body>
+    <h2>ログイン</h2>
+
+    {% if form.errors %}
+    <p>ユーザ名とパスワードが一致しません。</p>
+    {{ form.errors }}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+    {{ form.non_field_errors }}
+    {% endif %}
+
+    {% if next %}
+      {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+      {% else %}
+      <p>Please login to see this page.</p>
+      {% endif %}
+    {% endif %}
+
+    <form method="post" action="{% url 'mapmemo:login' %}">
+    {% csrf_token %}
+      <table>
+      <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </tr>
+      </table>
+      <input type="submit" value="ログイン">
+      <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+    <p><a href="{% url 'mapmemo:signup' %}">ユーザ登録はこちら</a></p>
+  </body>
+</html>

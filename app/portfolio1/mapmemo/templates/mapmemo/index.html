@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'mapmemo/css/style.css' %}" />
+    <script src="{% static 'mapmemo/js/lib.js' %}"></script>
+  </head>
+  <body>
+    {% comment %} ヘッダー {% endcomment %}
+    <div class="header">
+      <span class="pagename">Mapmemo</span>
+      <ul class="menu">
+        <li id="addicon">
+          <span>アイコン</span>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li id="username" data-username={{ request.user.username }} data-userid={{ request.user.id }}>
+          <span>{{ request.user.username }}</span>
+          <ul>
+            <li id="saveicon"><span>保存</span></li>
+            <li id="logout"><span>ログアウト</span></li>
+          </ul>
+        </li>
+        {% else %}
+        <li id="login">
+          <span>ログイン</span>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    {% comment %} アイコン追加メニュー {% endcomment %}
+    <div id="addiconmenu" class="addiconmenu">
+      <table>
+        <tr>
+          <td id="iconpointred">
+            <img src="{% static 'mapmemo/images/point_red.png' %}" />
+          </td>
+          <td id="iconpointpurple">
+            <img src="{% static 'mapmemo/images/point_purple.png' %}" />
+          </td>
+        </tr>
+        <tr>
+          <td id="iconpointorange">
+            <img src="{% static 'mapmemo/images/point_orange.png' %}" />
+          </td>
+          <td id="iconpointyellow">
+            <img src="{% static 'mapmemo/images/point_yellow.png' %}" />
+          </td>
+        </tr>
+        <tr>
+          <td id="iconpointgreen">
+            <img src="{% static 'mapmemo/images/point_green.png' %}" />
+          </td>
+          <td id="iconpointcyan">
+            <img src="{% static 'mapmemo/images/point_cyan.png' %}" />
+          </td>
+        </tr>
+        <tr>
+          <td id="iconpointblue">
+            <img src="{% static 'mapmemo/images/point_blue.png' %}" />
+          </td>
+          <td id="iconpointblack">
+            <img src="{% static 'mapmemo/images/point_black.png' %}" />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    {% comment %} 地図表示領域 {% endcomment %}
+    <div id="map" class="map"></div>
+
+    {% comment %} 保存メニュー選択時のダイアログ {% endcomment %}
+    <div class="modal" tabindex="-1" id="determine_saveicon_dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">保存確認</h5>
+          </div>
+          <div class="modal-body">
+            <p>アイコンを今の状態で保存してもよろしいでしょうか？</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+            <button type="button" class="btn btn-primary" id="determine_saveicon">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} 汎用ダイアログ {% endcomment %}
+    <div class="modal" tabindex="-1" id="common_dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="common_dialog_title"></h5>
+          </div>
+          <div class="modal-body" id="common_dialog_body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

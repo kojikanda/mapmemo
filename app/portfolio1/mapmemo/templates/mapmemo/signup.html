@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>ユーザ登録</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'mapmemo/css/style.css' %}">
+  </head>
+  <body>
+    <h2>ユーザー登録</h2>
+
+    <form method="post" action="{% url 'mapmemo:signup' %}">
+    {% csrf_token %}
+      <label>ユーザー名</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+      <br>
+      <label>パスワード</label>
+      {{ form.password1 }}
+      {{ form.password1.errors }}
+      <br>
+      <label>パスワード(確認)</label>
+      {{ form.password2 }}
+      {{ form.password2.errors }}
+      <br>
+      <input type="submit" value="登録">
+    </form>
+
+    <p><a href="{% url 'mapmemo:login' %}">ログインはこちら</a></p>
+  </body>
+</html>

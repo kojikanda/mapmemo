@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - python
+    networks:
+      - my-network
+  python:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        - OS_USER=$OS_USER
+        - OS_GROUP=$OS_GROUP
+    command: uwsgi --ini /usr/src/app/portfolio1/uwsgi.ini
+    working_dir: /usr/src/app/
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+      args:
+        - DB_LANG=ja_JP
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    networks:
+      - my-network
+
+volumes:
+  db_data:
+
+networks:
+  my-network:
+    driver: bridge

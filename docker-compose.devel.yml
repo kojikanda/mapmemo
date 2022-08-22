@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  python:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        - OS_USER=$OS_USER
+        - OS_GROUP=$OS_GROUP
+    #command: python manage.py runserver 0.0.0.0:8000
+    # runserverで開発サーバを起動しないと、コンテナが落ちるので、runserverを実行する。
+    # この際、コンテナの初期起動時のみ、runserverで開発サーバを立ち上げると、postgresコンテナとの接続でエラーとなる。
+    # これを防ぐために、wait_for_postgres.shで接続可能となるのを待った上で、runserverを実行する。
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sh ../wait_for_postgres.sh && python manage.py runserver 0.0.0.0:8000"
+    working_dir: /usr/src/app/portfolio1
+    ports:
+      - 8080:8000
+      # デバッグ用にポートを追加
+      - 8888:8888
+    env_file:
+      - ./.env.devel
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+      args:
+        - DB_LANG=ja_JP
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.devel
+    networks:
+      - my-network
+
+volumes:
+  db_data:
+
+networks:
+  my-network:
+    driver: bridge
