@@ -8,7 +8,7 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
+            "program": "${workspaceFolder}/app/portfolio1/manage.py",
             "console": "internalConsole",
             "args": [
                 "runserver",
@@ -21,7 +21,7 @@
             "request": "launch",
             "type": "chrome",
             "url": "http://127.0.0.1:8888/mapmemo/",
-            "webRoot": "${workspaceFolder}",
+            "webRoot": "${workspaceFolder}/app/portfolio1",
             "sourceMapPathOverrides": {
                 "webpack://js/./src/*": "${webRoot}/mapmemo/js/src/*",
             }
