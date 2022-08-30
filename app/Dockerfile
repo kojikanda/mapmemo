@@ -15,6 +15,8 @@ RUN apk update && \
 ARG GITHUB_URL
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
+
+# (application data get from GitHub)
 RUN cd /usr && \
     touch /root/.netrc && \
     echo machine github.com >> /root/.netrc && \
@@ -22,6 +24,15 @@ RUN cd /usr && \
     echo password $GITHUB_TOKEN >> /root/.netrc && \
     git clone --depth 1 $GITHUB_URL && \
     rm /root/.netrc
+
+# (application data copy from local)
+# RUN mkdir -p /usr/mapmemo/app
+# WORKDIR /usr/mapmemo/app
+# COPY ./portfolio1 ./portfolio1
+# COPY ./Dockerfile .
+# COPY ./requirements.txt .
+# COPY ./wait_for_postgres.sh .
+# COPY ./init_django.sh .
 
 # create application directory
 RUN mkdir -p /var/run/uwsgi

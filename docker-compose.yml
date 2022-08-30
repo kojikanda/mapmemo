@@ -21,7 +21,12 @@ services:
         - GITHUB_URL=$GITHUB_URL
         - GITHUB_USER=$GITHUB_USER
         - GITHUB_TOKEN=$GITHUB_TOKEN
-    command: uwsgi --ini /usr/mapmemo/app/portfolio1/uwsgi.ini
+    # wait_for_postgres.shでpostgresコンテナに対し、接続可能となるのを待った上で、
+    # init_django.shでDjangoの初期化を行い、uwsgiの起動を実行する。
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sh ../wait_for_postgres.sh && sh ../init_django.sh && uwsgi --ini /usr/mapmemo/app/portfolio1/uwsgi.ini"
     working_dir: /usr/mapmemo/app/portfolio1
     expose:
       - 8000

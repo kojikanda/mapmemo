@@ -13,11 +13,12 @@ services:
         - GITHUB_TOKEN=$GITHUB_TOKEN
     # runserverで開発サーバを起動しないと、コンテナが落ちるので、runserverを実行する。
     # この際、コンテナの初回起動時のみ、runserverで開発サーバを立ち上げると、postgresコンテナとの接続でエラーとなる。
-    # これを防ぐために、wait_for_postgres.shで接続可能となるのを待った上で、runserverを実行する。
+    # これを防ぐために、wait_for_postgres.shでpostgresコンテナに対し、接続可能となるのを待った上で、
+    # init_django.shでDjangoの初期化を行い、runserverを実行する。
     command:
       - "/bin/sh"
       - "-c"
-      - "sh ../wait_for_postgres.sh && python manage.py runserver 0.0.0.0:8000"
+      - "sh ../wait_for_postgres.sh && sh ../init_django.sh && python manage.py runserver 0.0.0.0:8000"
     working_dir: /usr/mapmemo/app/portfolio1
     ports:
       - 8080:8000
