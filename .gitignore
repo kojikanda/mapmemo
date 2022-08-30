@@ -137,3 +137,6 @@ node_modules/
 
 # django static directory
 app/portfolio1/static
+
+# django initialize check file
+init_django_check
