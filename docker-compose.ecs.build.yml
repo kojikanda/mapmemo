@@ -2,16 +2,22 @@ version: "3.8"
 
 services:
   nginx:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_NGINX}:${ECR_REPOSITORY_TAG_NGINX}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
     build:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - 8080:80
+      - "80:80"
+    env_file:
+      - ./.env.ecs
     depends_on:
       - python
-    networks:
-      - my-network
   python:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_PYTHON}:${ECR_REPOSITORY_TAG_PYTHON}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -29,12 +35,13 @@ services:
       - "sh ../wait_for_postgres.sh && sh ../init_django.sh && uwsgi --ini /usr/mapmemo/app/portfolio1/uwsgi.ini"
     working_dir: /usr/mapmemo/app/portfolio1
     env_file:
-      - ./.env
+      - ./.env.ecs
     depends_on:
       - postgres
-    networks:
-      - my-network
   postgres:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_POSTGRES}:${ECR_REPOSITORY_TAG_POSTGRES}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
     build:
       context: ./postgres
       dockerfile: Dockerfile
@@ -43,13 +50,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env
-    networks:
-      - my-network
+      - ./.env.ecs
 
 volumes:
   db_data:
-
-networks:
-  my-network:
-    driver: bridge

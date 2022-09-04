@@ -45,6 +45,9 @@ WORKDIR $APP_HOME
 RUN pip install --upgrade pip && \
     pip install -r $APP_HOME/requirements.txt
 
+# expose port
+EXPOSE 8000
+
 # chown all the files to app user
 RUN chown -R $OS_USER:$OS_GROUP /usr/mapmemo
 RUN chown -R $OS_USER:$OS_GROUP /var/run/uwsgi

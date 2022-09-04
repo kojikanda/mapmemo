@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from . import views
 
 urlpatterns = [
     path('mapmemo/', include('mapmemo.urls')),
     path('admin/', admin.site.urls),
+    # AWS ECSのヘルスチェック用。無条件でステータスコード: 200を返す。
+    path('healthcheck/', views.healthcheck)
 ]

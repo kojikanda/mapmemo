@@ -19,6 +19,11 @@ def main(request):
     Returns:
         HttpResponse: レスポンス
     """
+    # debug start ->
+    # logger = logging.getLogger(__name__)
+    # logger.info("mapmemo header=" + json.dumps(request.headers._store))
+    # logger.info("mapmemo host=" + json.dumps(request.headers._store['host'][1]))
+    # debug end <-
     ctx = {"title": "Map Memo"}
     return render(request, "mapmemo/index.html", ctx)
 

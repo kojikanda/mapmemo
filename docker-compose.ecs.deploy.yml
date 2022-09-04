@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_NGINX}:${ECR_REPOSITORY_TAG_NGINX}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
+    # build:
+    #   context: ./nginx
+    #   dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    env_file:
+      - ./.env.ecs
+    depends_on:
+      - python
+  python:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_PYTHON}:${ECR_REPOSITORY_TAG_PYTHON}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
+    # build:
+    #   context: ./app
+    #   dockerfile: Dockerfile
+    #   args:
+    #     - OS_USER=$OS_USER
+    #     - OS_GROUP=$OS_GROUP
+    #     - GITHUB_URL=$GITHUB_URL
+    #     - GITHUB_USER=$GITHUB_USER
+    #     - GITHUB_TOKEN=$GITHUB_TOKEN
+    # wait_for_postgres.shでpostgresコンテナに対し、接続可能となるのを待った上で、
+    # init_django.shでDjangoの初期化を行い、uwsgiの起動を実行する。
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sh ../wait_for_postgres.sh && sh ../init_django.sh && uwsgi --ini /usr/mapmemo/app/portfolio1/uwsgi.ini"
+    working_dir: /usr/mapmemo/app/portfolio1
+    env_file:
+      - ./.env.ecs
+    depends_on:
+      - postgres
+  postgres:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME_POSTGRES}:${ECR_REPOSITORY_TAG_POSTGRES}
+    x-aws-policies:
+      - "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${AWS_SSM_AGENT_POLICY}"
+    # build:
+    #   context: ./postgres
+    #   dockerfile: Dockerfile
+    #   args:
+    #     - DB_LANG=ja_JP
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.ecs
+
+volumes:
+  db_data:
