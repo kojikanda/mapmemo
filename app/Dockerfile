@@ -4,7 +4,7 @@ FROM python:3.10-alpine
 # create app user
 ARG OS_USER
 ARG OS_GROUP
-RUN addgroup -S $OS_GROUP && adduser -S $OS_USER -G $OS_GROUP
+RUN addgroup -S $OS_GROUP && adduser -S $OS_USER -G $OS_GROUP -s /bin/sh
 
 # install Alpine Linux packages
 RUN apk update && \
