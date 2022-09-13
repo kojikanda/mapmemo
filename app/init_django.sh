@@ -9,7 +9,7 @@ if [ ! -f "../init_django_check" ]; then
   >&2 echo "start initialization of django"
 
   # DBデータ初期化
-  python manage.py flush --no-input
+  # python manage.py flush --no-input
 
   # マイグレーション
   python manage.py makemigrations
